@@ -34,10 +34,17 @@ def empty_squares(board):
             for key, value in board.items()
             if value == INITIAL_MARKER]
 
+def join_or(empty_squares, delimiter = 'or'):
+    if len(empty_squares) > 1:
+        return (f"{', '.join(empty_squares[:len(empty_squares) - 1])}"
+               f" {delimiter} {empty_squares[len(empty_squares) - 1]}")
+    else: 
+        return empty_squares[0]
+
 def player_chooses_square(board):
     while True:
         valid_choices = [str(num) for num in empty_squares(board)]
-        prompt(f"Choose a square ({', '.join(valid_choices)}):")
+        prompt(f"Choose a square {join_or(valid_choices)}")
         square = input().strip()
         if square in valid_choices:
             break
@@ -78,7 +85,6 @@ def detect_winner(board):
     
     return None
     
-
 
 
 def play_tic_tac_toe():
