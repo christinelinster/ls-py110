@@ -1,4 +1,4 @@
-# Letter Counter
+# Letter Counter (Part 1)
 
 '''
 Write a function that takes a string consisting of zero or more space-separated words
