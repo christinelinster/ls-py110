@@ -9,7 +9,6 @@ def string_to_signed_integer(s):
         case _:
             return string_to_integer(s)
 
-
 def string_to_integer(s):
     DIGITS = {'0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9}
     value = 0
