@@ -5,11 +5,18 @@ INITIAL_MARKER = ' '
 HUMAN_MARKER = 'X'
 COMPUTER_MARKER = 'O'
 WINS_NEEDED = 3
+WINNING_LINES = [
+    [1, 2, 3], [4, 5, 6], [7, 8, 9],
+    [1, 4, 7], [2, 5, 8], [3, 6, 9],
+    [1, 5, 9], [3, 5, 7]
+]
+
 
 def prompt(message):
     print(f'==>{message}')
 
 def display_board(board):
+    # os.system('clear')
 
     prompt(f"You are {HUMAN_MARKER}. Computer is {COMPUTER_MARKER}.")
     print('')
@@ -41,6 +48,14 @@ def join_or(empty_squares, delimiter = ', ', word = 'or'):
     else: 
         return empty_squares[0]
 
+def computer_defense(line, board):
+    markers_on_board = [board[square] for square in line]
+    if markers_on_board.count(HUMAN_MARKER) == 2: 
+        for square in line:
+            if board[square] == INITIAL_MARKER:
+                return square
+    return None
+
 def player_chooses_square(board):
     while True:
         valid_choices = [str(num) for num in empty_squares(board)]
@@ -56,7 +71,14 @@ def player_chooses_square(board):
 def computer_chooses_square(board):
     if len(empty_squares(board)) == 0:
         return
-    square = random.choice(empty_squares(board))
+    square = None
+    for line in WINNING_LINES:
+        square = computer_defense(line, board)
+        if square:
+            break
+
+    if not square:
+        square = random.choice(empty_squares(board))
     board[square] = COMPUTER_MARKER
 
 def board_full(board):
@@ -66,13 +88,7 @@ def someone_won(board):
     return bool(detect_winner(board))
 
 def detect_winner(board):
-    winning_lines = [
-        [1, 2, 3], [4, 5, 6], [7, 8, 9],
-        [1, 4, 7], [2, 5, 8], [3, 6, 9],
-        [1, 5, 9], [3, 5, 7]
-    ]
-
-    for line in winning_lines:
+    for line in WINNING_LINES:
         sq1, sq2, sq3 = line
         if (board[sq1] == HUMAN_MARKER
                 and board[sq2] == HUMAN_MARKER
@@ -101,9 +117,10 @@ def play_match():
         player_wins = 0
         computer_wins = 0
 
-        while True: 
-            player_wins, computer_wins = play_tic_tac_toe(player_wins, computer_wins)
-        
+        while True:
+            winner = play_tic_tac_toe(player_wins, computer_wins)
+            player_wins, computer_wins = get_score(player_wins, computer_wins, winner)
+
             if player_wins >= WINS_NEEDED:
                 prompt('You win this round!')
                 break
@@ -120,10 +137,8 @@ def play_match():
 def play_tic_tac_toe(player_score, computer_score):
     board = initialize_board()
     while True:
-        os.system('clear')
-        display_score(player_score, computer_score)
         display_board(board)
-        
+        display_score(player_score, computer_score)
         player_chooses_square(board)
         if someone_won(board) or board_full(board):
             break
@@ -132,13 +147,13 @@ def play_tic_tac_toe(player_score, computer_score):
         if someone_won(board) or board_full(board):
             break
 
+
     if someone_won(board):
-        display_score(player_score, computer_score)
+        display_board(board)
         prompt(f"{detect_winner(board)} won!")
-        player_score, computer_score = get_score(player_score, computer_score, detect_winner(board))
     else:
         prompt("It's a tie!")
         
-    return player_score, computer_score
+    return detect_winner(board)
 
 play_match()
