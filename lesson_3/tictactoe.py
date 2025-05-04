@@ -4,7 +4,7 @@ import os
 INITIAL_MARKER = ' '
 HUMAN_MARKER = 'X'
 COMPUTER_MARKER = 'O'
-WINS_NEEDED = 2
+WINS_NEEDED = 1
 MIDDLE_SQUARE = 5
 WINNING_LINES = [
     [1, 2, 3], [4, 5, 6], [7, 8, 9],
@@ -159,7 +159,6 @@ def play_match():
         elif computer_wins >= WINS_NEEDED:
             prompt('Computer wins this round!')
             break
-    play_again()
 
 def choose_square(board, current_player):
     player_chooses_square(board) if current_player == HUMAN_MARKER else computer_chooses_square(board)
