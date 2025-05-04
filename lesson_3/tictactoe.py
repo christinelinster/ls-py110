@@ -4,7 +4,7 @@ import os
 INITIAL_MARKER = ' '
 HUMAN_MARKER = 'X'
 COMPUTER_MARKER = 'O'
-WINS_NEEDED = 1
+WINS_NEEDED = 2
 MIDDLE_SQUARE = 5
 WINNING_LINES = [
     [1, 2, 3], [4, 5, 6], [7, 8, 9],
@@ -70,26 +70,6 @@ def select_risky_square(line, board, marker):
             if board[square] == INITIAL_MARKER:
                 return square
     return None
-    
-# def computer_defense(line, board):
-#     markers_on_board = [board[square] for square in line]
-
-#     if markers_on_board.count(HUMAN_MARKER) == 2:
-#         for square in line: 
-#             if board[square] == INITIAL_MARKER:
-#                 return square
-#     elif board[MIDDLE_SQUARE] == INITIAL_MARKER: 
-#         return MIDDLE_SQUARE
-
-#     return None
-
-# def computer_attack(line, board):
-#     markers_on_board = [board[square] for square in line]
-#     if markers_on_board.count(COMPUTER_MARKER) == 2: 
-#         for square in line:
-#             if board[square] == INITIAL_MARKER:
-#                 return square
-#     return None
 
 def player_chooses_square(board):
     while True:
@@ -135,14 +115,11 @@ def someone_won(board):
 
 def detect_winner(board):
     for line in WINNING_LINES:
-        sq1, sq2, sq3 = line
-        if (board[sq1] == HUMAN_MARKER
-                and board[sq2] == HUMAN_MARKER
-                and board[sq3] == HUMAN_MARKER):
+        values = [board[square] for square in line]
+        
+        if values.count(HUMAN_MARKER) == 3:
             return 'Player'
-        elif (board[sq1] == COMPUTER_MARKER
-                and board[sq2] == COMPUTER_MARKER
-                and board[sq3] == COMPUTER_MARKER):
+        elif values.count(COMPUTER_MARKER) == 3:
             return 'Computer'
     
     return None
@@ -158,36 +135,31 @@ def get_score(player_score, computer_score, winner):
         computer_score += 1
     return player_score, computer_score
 
-def play_match():
-    while True:
-        player_wins = 0
-        computer_wins = 0
-        starting_player = choose_starting_player()
+def play_again():
+    prompt("Play again? (y or n)")
+    answer = input().lower()
 
-        while True:
-            winner = play_tic_tac_toe(starting_player, player_wins, computer_wins)
-            player_wins, computer_wins = get_score(player_wins, computer_wins, winner)
-            starting_player = HUMAN_MARKER if starting_player == COMPUTER_MARKER else COMPUTER_MARKER
-
-            if player_wins >= WINS_NEEDED:
-                prompt('You win this round!')
-                break
-            elif computer_wins >= WINS_NEEDED:
-                prompt('Computer wins this round!')
-                break
-        
-        prompt("Play again? (y or n)")
+    while answer not in ['yes', 'y', 'n', 'no']:
+        prompt("Please enter y or n")
         answer = input().lower()
-
-        while answer not in ['yes', 'y', 'n', 'no']:
-            prompt("Please enter y or n")
-            answer = input().lower()
         
-        if answer != 'y' or answer != 'yes':
-            if answer == 'n' or answer == 'no':
-                break
+    return answer == 'y' or answer == 'yes'
 
-    prompt('Thanks for playing!')
+def play_match():
+    player_wins = 0
+    computer_wins = 0
+    starting_player = choose_starting_player()
+    while True:
+        winner = play_tic_tac_toe(starting_player, player_wins, computer_wins)
+        player_wins, computer_wins = get_score(player_wins, computer_wins, winner)
+        starting_player = HUMAN_MARKER if starting_player == COMPUTER_MARKER else COMPUTER_MARKER
+        if player_wins >= WINS_NEEDED:
+            prompt('You win this round!')
+            break
+        elif computer_wins >= WINS_NEEDED:
+            prompt('Computer wins this round!')
+            break
+    play_again()
 
 def choose_square(board, current_player):
     player_chooses_square(board) if current_player == HUMAN_MARKER else computer_chooses_square(board)
@@ -206,11 +178,23 @@ def play_tic_tac_toe(current_player, player_score, computer_score):
         current_player = alternate_player(current_player)
         if someone_won(board) or board_full(board):
             break
-
+    
+    display_board(board)
 
     if someone_won(board):
-        display_board(board)
+        prompt(f'{detect_winner(board)} won this game!')
+        input("Press Enter to continue...")
+    else:
+        prompt("It's a tie!")
+        input("Press Enter to continue...")
         
     return detect_winner(board)
 
-play_match()
+def main():
+    while True:
+        play_match()
+        if not play_again():
+            prompt('Thank you for playing!')
+            break
+
+main()
