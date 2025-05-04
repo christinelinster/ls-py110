@@ -5,18 +5,17 @@ INITIAL_MARKER = ' '
 HUMAN_MARKER = 'X'
 COMPUTER_MARKER = 'O'
 WINS_NEEDED = 3
+MIDDLE_SQUARE = 5
 WINNING_LINES = [
     [1, 2, 3], [4, 5, 6], [7, 8, 9],
     [1, 4, 7], [2, 5, 8], [3, 6, 9],
     [1, 5, 9], [3, 5, 7]
 ]
-
-
 def prompt(message):
     print(f'==>{message}')
 
 def display_board(board):
-    # os.system('clear')
+    os.system('clear')
 
     prompt(f"You are {HUMAN_MARKER}. Computer is {COMPUTER_MARKER}.")
     print('')
@@ -36,6 +35,22 @@ def display_board(board):
 def initialize_board():
     return {square: INITIAL_MARKER for square in range(1, 10)}
 
+def choose_starting_player():
+    options = ['player', 'computer', 'choose']
+    while True:
+        prompt(f'Select who starts the game: {', '.join(options)}')
+        starting_player = input()
+
+        if starting_player.lower() == 'player':
+            return HUMAN_MARKER
+        elif starting_player.lower() == 'computer':
+            return COMPUTER_MARKER
+        elif starting_player.lower() == 'choose':
+            return random.choice(HUMAN_MARKER, COMPUTER_MARKER)
+        else:
+            prompt('That is not a valid choice.')
+
+
 def empty_squares(board):
     return [key 
             for key, value in board.items()
@@ -50,7 +65,19 @@ def join_or(empty_squares, delimiter = ', ', word = 'or'):
 
 def computer_defense(line, board):
     markers_on_board = [board[square] for square in line]
-    if markers_on_board.count(HUMAN_MARKER) == 2: 
+
+    if markers_on_board.count(HUMAN_MARKER) == 2:
+        for square in line: 
+            if board[square] == INITIAL_MARKER:
+                return square
+    elif board[MIDDLE_SQUARE] == INITIAL_MARKER: 
+        return MIDDLE_SQUARE
+
+    return None
+
+def computer_attack(line, board):
+    markers_on_board = [board[square] for square in line]
+    if markers_on_board.count(COMPUTER_MARKER) == 2: 
         for square in line:
             if board[square] == INITIAL_MARKER:
                 return square
@@ -73,9 +100,15 @@ def computer_chooses_square(board):
         return
     square = None
     for line in WINNING_LINES:
-        square = computer_defense(line, board)
+        square = computer_attack(line, board)
+
         if square:
             break
+    if not square:
+        for line in WINNING_LINES:
+            square = computer_defense(line, board)
+            if square:
+                break
 
     if not square:
         square = random.choice(empty_squares(board))
@@ -116,10 +149,12 @@ def play_match():
     while True:
         player_wins = 0
         computer_wins = 0
+        starting_player = choose_starting_player()
 
         while True:
-            winner = play_tic_tac_toe(player_wins, computer_wins)
+            winner = play_tic_tac_toe(starting_player, player_wins, computer_wins)
             player_wins, computer_wins = get_score(player_wins, computer_wins, winner)
+            starting_player = HUMAN_MARKER if starting_player == COMPUTER_MARKER else COMPUTER_MARKER
 
             if player_wins >= WINS_NEEDED:
                 prompt('You win this round!')
@@ -132,21 +167,32 @@ def play_match():
 
         if answer[0] != 'y':
             break
+            
+
     prompt('Thanks for playing!')
 
-def play_tic_tac_toe(player_score, computer_score):
+def play_tic_tac_toe(starting_player, player_score, computer_score):
     board = initialize_board()
+
     while True:
-        display_board(board)
-        display_score(player_score, computer_score)
-        player_chooses_square(board)
-        if someone_won(board) or board_full(board):
-            break
-
-        computer_chooses_square(board)
-        if someone_won(board) or board_full(board):
-            break
-
+        if starting_player == HUMAN_MARKER:
+            display_board(board)
+            display_score(player_score, computer_score)
+            player_chooses_square(board)
+            if someone_won(board) or board_full(board):
+                break
+            computer_chooses_square(board)
+            if someone_won(board) or board_full(board):
+                break
+        else: 
+            computer_chooses_square(board)
+            display_board(board)
+            display_score(player_score, computer_score)
+            if someone_won(board) or board_full(board):
+                break
+            player_chooses_square(board)
+            if someone_won(board) or board_full(board):
+                break
 
     if someone_won(board):
         display_board(board)
