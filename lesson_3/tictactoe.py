@@ -4,7 +4,7 @@ import os
 INITIAL_MARKER = " "
 HUMAN_MARKER = "X"
 COMPUTER_MARKER = "O"
-WINS_NEEDED = 1
+WINS_NEEDED = 3
 MIDDLE_SQUARE = 5
 WINNING_LINES = [
     [1, 2, 3], [4, 5, 6], [7, 8, 9],
