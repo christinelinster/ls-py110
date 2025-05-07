@@ -93,16 +93,16 @@ def calculate_results(player_total, dealer_total):
     if player_total > BUST_VALUE:
         prompt('Busted! Dealer wins')
         return 'Dealer'
-    elif dealer_total > BUST_VALUE:
+    if dealer_total > BUST_VALUE:
         prompt('Dealer busted. You win!')
         return 'Player'
-    elif player_total > dealer_total:
+    if player_total > dealer_total:
         prompt('You win!')
         return 'Player'
-    elif player_total < dealer_total:
+    if player_total < dealer_total:
         prompt('Dealer wins!')
         return 'Dealer'
-    
+
     prompt('Tie game!')
     return None
 
@@ -127,16 +127,17 @@ def play_twenty_one(wins):
     dealer_total = total(dealer_cards)
 
     prompt(f'The dealer\'s cards are: ?, {dealer_cards[1]}')
-    prompt(f'Your cards are: {display_hand(player_cards)} with a total value of {player_total}')
-    
+    prompt(f'Your cards are: {display_hand(player_cards)}'
+           f' with a total value of {player_total}')
+
     player_total = player_turn(current_deck, player_cards, player_total)
 
     if not busted(player_total):
         dealer_total = dealer_turn(current_deck, dealer_cards, dealer_total)
-    
+
     winner = calculate_results(player_total, dealer_total)
     display_results(player_cards, dealer_cards, player_total, dealer_total)
-    return winner 
+    return winner
 
 
 def get_score(winner, wins):
@@ -159,10 +160,10 @@ def play_match():
             input('Press Enter to play the next game.')
             continue
         wins = get_score(winner, wins)
-        
+
         if wins['Player'] >= WINS_NEEDED:
             prompt('You win this round!')
-            break 
+            break
         if wins['Dealer'] >= WINS_NEEDED:
             prompt('You lost this round!')
             break
