@@ -6,6 +6,7 @@ SUITS = ['H', 'D', 'S', 'C']
 DECK = [[suit, value] for suit in SUITS for value in VALUES]
 BUST_VALUE = 21
 DEALER_HIT_VALUE = 17
+WINS_NEEDED = 2
 
 def prompt(message):
     print(f'==> {message}')
@@ -87,31 +88,36 @@ def deal_starting_cards(deck, player_cards, dealer_cards):
         dealer_cards.append(deck.pop())
 
 
-def calculate_results(player_cards, dealer_cards, player_total, dealer_total):
+def calculate_results(player_total, dealer_total):
     os.system('clear')
     if player_total > BUST_VALUE:
         prompt('Busted! Dealer wins')
+        return 'Dealer'
     elif dealer_total > BUST_VALUE:
         prompt('Dealer busted. You win!')
+        return 'Player'
     elif player_total > dealer_total:
         prompt('You win!')
+        return 'Player'
     elif player_total < dealer_total:
         prompt('Dealer wins!')
-    else:
-        prompt('Tie game!')
-
-    display_results(player_cards, dealer_cards, player_total, dealer_total)
+        return 'Dealer'
+    
+    prompt('Tie game!')
+    return None
 
 
 def display_results(player_cards, dealer_cards, player_total, dealer_total):
-    prompt(f'Your cards are: {display_hand(player_cards)} '
+
+    prompt(f'Your cards were: {display_hand(player_cards)} '
            f'with a total value of {player_total}')
-    prompt(f'The dealer\'s cards are: {display_hand(dealer_cards)} '
+    prompt(f'The dealer\'s cards were: {display_hand(dealer_cards)} '
            f'with a total value of {dealer_total}')
 
 
-def play_twenty_one():
+def play_twenty_one(wins):
     os.system('clear')
+    display_score(wins)
     current_deck = initialize_deck()
     player_cards = []
     dealer_cards = []
@@ -127,9 +133,41 @@ def play_twenty_one():
 
     if not busted(player_total):
         dealer_total = dealer_turn(current_deck, dealer_cards, dealer_total)
+    
+    winner = calculate_results(player_total, dealer_total)
+    display_results(player_cards, dealer_cards, player_total, dealer_total)
+    return winner 
 
-    calculate_results(player_cards, dealer_cards, player_total, dealer_total)
 
+def get_score(winner, wins):
+    if winner == 'Player':
+        wins['Player'] += 1
+    elif winner == 'Dealer':
+        wins['Dealer'] += 1
+
+    return wins
+
+def display_score(wins):
+    prompt(f'Player Score: {wins['Player']}')
+    prompt(f'Dealer Score: {wins['Dealer']}')
+
+def play_match():
+    wins = {'Player': 0, 'Dealer': 0}
+    while True:
+        winner = play_twenty_one(wins)
+        if not winner:
+            input('Press Enter to play the next game.')
+            continue
+        wins = get_score(winner, wins)
+        
+        if wins['Player'] >= WINS_NEEDED:
+            prompt('You win this round!')
+            break 
+        if wins['Dealer'] >= WINS_NEEDED:
+            prompt('You lost this round!')
+            break
+        input('Press Enter to play the next game')
+    display_score(wins)
 
 def play_again():
     prompt("Play again? (y or n)")
@@ -144,7 +182,7 @@ def play_again():
 
 def main():
     while True:
-        play_twenty_one()
+        play_match()
         if not play_again():
             break
 
