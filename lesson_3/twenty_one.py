@@ -1,4 +1,4 @@
-import random 
+import random
 import os
 
 VALUES = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
@@ -7,14 +7,14 @@ DECK = [[suit, value] for suit in SUITS for value in VALUES]
 
 def prompt(message):
     print(f'==> {message}')
-    
+
 
 def initialize_deck():
-    deck = [f'{value}{suit}' for suit in SUITS for value in VALUES] 
+    deck = [f'{value}{suit}' for suit in SUITS for value in VALUES]
     random.shuffle(deck)
     return deck
 
-    
+
 def total(cards):
     values = [card[0] for card in cards]
 
@@ -26,12 +26,12 @@ def total(cards):
             total_sum += 10
         else:
             total_sum += int(value)
-    
+
     aces = values.count('A')
     while total_sum > 21 and aces:
         total_sum -= 10
         aces -= 1
-    
+
     return total_sum
 
 def busted(cards):
@@ -69,10 +69,10 @@ def dealer_turn(deck, dealer_cards):
 
 
 def deal(deck, cards):
-      cards.append(deck.pop())
-    
+    cards.append(deck.pop())
+
 def deal_starting_cards(deck, player_cards, dealer_cards):
-    for i in range(2):
+    for _ in range(2):
         player_cards.append(deck.pop())
         dealer_cards.append(deck.pop())
     prompt(f'The dealer\'s cards are: ?, {dealer_cards[1]}')
@@ -98,8 +98,10 @@ def calculate_results(player_cards, dealer_cards):
     display_results(player_cards, dealer_cards)
 
 def display_results(player_cards, dealer_cards):
-    prompt(f'Your cards are: {display_hand(player_cards)} with a total value of {total(player_cards)}')
-    prompt(f'The dealer\'s cards are: {display_hand(dealer_cards)} with a total value of {total(dealer_cards)}')
+    prompt(f'Your cards are: {display_hand(player_cards)}'
+           f'with a total value of {total(player_cards)}')
+    prompt(f'The dealer\'s cards are: {display_hand(dealer_cards)}'
+           f'with a total value of {total(dealer_cards)}')
 
 
 def play_twenty_one():
@@ -108,12 +110,12 @@ def play_twenty_one():
     player_cards = []
     dealer_cards = []
     deal_starting_cards(current_deck, player_cards, dealer_cards)
-    
+
     player_turn(current_deck, player_cards)
 
     if not busted(player_cards):
         dealer_turn(current_deck, dealer_cards)
-    
+
     calculate_results(player_cards, dealer_cards)
 
 def play_again():
@@ -134,10 +136,3 @@ def main():
 
 
 main()
-
-
-
-    
-
-
-
