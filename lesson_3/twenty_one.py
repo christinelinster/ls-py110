@@ -9,13 +9,14 @@ def prompt(message):
     print(f'==> {message}')
     
 
-def shuffle(deck):
+def initialize_deck():
+    deck = [f'{value}{suit}' for suit in SUITS for value in VALUES] 
     random.shuffle(deck)
     return deck
 
     
 def total(cards):
-    values = [card[1] for card in cards]
+    values = [card[0] for card in cards]
 
     total_sum = 0
     for value in values:
@@ -34,30 +35,29 @@ def total(cards):
     return total_sum
 
 def busted(cards):
-    if total(cards) > 21:
-        return True
-    return False
+    return total(cards) > 21
 
 def display_hand(cards):
-    prompt(cards)
-    prompt(f'The total value is: {total(cards)}')
+    return ', '.join(cards)
 
 def player_turn(deck, player_cards):
     while True:
-        answer = input('hit or stay?: ')
+        answer = input('hit or stay? (h / s): ').lower()
+        valid_choices = ('h', 's')
+
+        if answer and answer[0] not in valid_choices:
+            prompt('Please enter a valid input')
+            continue
+
         os.system('clear')
-        if answer == 'stay' or busted(player_cards):
+        if answer.startswith('s'):
             break
-        
-        deal(deck, player_cards)
-        display_hand(player_cards)
+        if answer.startswith('h'):
+            deal(deck, player_cards)
+            prompt(f'Your cards are: {display_hand(player_cards)}')
+            prompt(f'Your total value is {total(player_cards)}')
         if busted(player_cards):
             break
-
-    if busted(player_cards):
-        prompt('Bust! You lost!')
-    else: 
-        prompt('You chose to stay!')
 
 def dealer_turn(deck, dealer_cards):
     while True:
@@ -75,47 +75,65 @@ def deal_starting_cards(deck, player_cards, dealer_cards):
     for i in range(2):
         player_cards.append(deck.pop())
         dealer_cards.append(deck.pop())
-    prompt(f'Dealer cards: ?, {dealer_cards[1]}')
-    display_hand(player_cards)
+    prompt(f'The dealer\'s cards are: ?, {dealer_cards[1]}')
+    prompt(f'Your cards are: {display_hand(player_cards)}')
+    prompt(f'Your total card value is: {total(player_cards)}')
 
 def calculate_results(player_cards, dealer_cards):
+    dealer_total = total(dealer_cards)
+    player_total = total(player_cards
+                         )
     os.system('clear')
-    if not busted(player_cards) and not busted(dealer_cards):
-        if total(player_cards) > total(dealer_cards):
-            prompt('Player won!')
-        elif total(dealer_cards) > total(player_cards):
-            prompt('You lose!')
-    elif busted(player_cards) and busted(dealer_cards):
-        prompt('Both busted, Tie game!')
-    elif busted(player_cards):
+    if busted(player_cards):
         prompt('Busted! Dealer wins')
     elif busted(dealer_cards):
         prompt('You win! Dealer busted.')
+    elif player_total > dealer_total:
+        prompt('You win!')
+    elif player_total < dealer_total:
+        prompt('Dealer wins!')
+    else:
+        prompt('Tie game!')
 
     display_results(player_cards, dealer_cards)
 
 def display_results(player_cards, dealer_cards):
-    prompt(f'Your cards are: {player_cards}')
-    prompt(f'Your total value was: {total(player_cards)}')
-    prompt(f'The dealer\'s cards are: {dealer_cards}')
-    prompt(f'The dealer\'s total value was: {total(dealer_cards)}')
+    prompt(f'Your cards are: {display_hand(player_cards)} with a total value of {total(player_cards)}')
+    prompt(f'The dealer\'s cards are: {display_hand(dealer_cards)} with a total value of {total(dealer_cards)}')
 
 
 def play_twenty_one():
-    current_deck = shuffle(DECK)
+    os.system('clear')
+    current_deck = initialize_deck()
     player_cards = []
     dealer_cards = []
     deal_starting_cards(current_deck, player_cards, dealer_cards)
+    
     player_turn(current_deck, player_cards)
 
-    if busted(player_cards):
-        calculate_results(player_cards, dealer_cards)
-    else: 
+    if not busted(player_cards):
         dealer_turn(current_deck, dealer_cards)
-        calculate_results(player_cards, dealer_cards)
+    
+    calculate_results(player_cards, dealer_cards)
+
+def play_again():
+    prompt("Play again? (y or n)")
+    answer = input().lower()
+
+    while answer not in ["yes", "y", "n", "no"]:
+        prompt("Please enter y or n")
+        answer = input().lower()
+
+    return answer in ("y", "yes")
+
+def main():
+    while True:
+        play_twenty_one()
+        if not play_again():
+            break
 
 
-play_twenty_one()
+main()
 
 
 
