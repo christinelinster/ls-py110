@@ -46,7 +46,7 @@ def display_hand(cards):
     return ', '.join(cards)
 
 
-def player_turn(deck, player_cards, player_total):
+def player_turn(deck, player_cards):
     while True:
         answer = input('hit or stay? (h / s): ').lower()
         valid_choices = ('h', 's')
@@ -60,22 +60,22 @@ def player_turn(deck, player_cards, player_total):
             break
         if answer.startswith('h'):
             deal(deck, player_cards)
-            player_total = total(player_cards)
+            current_total = total(player_cards)
             prompt(f'Your cards are: {display_hand(player_cards)}')
-            prompt(f'Your total value is {player_total}')
+            prompt(f'Your total value is {current_total}')
 
-        if busted(player_total):
+        if busted(current_total):
             break
-    return player_total
+    return total(player_cards)
 
 
-def dealer_turn(deck, dealer_cards, dealer_total):
+def dealer_turn(deck, dealer_cards):
     while True:
-        if dealer_total >= DEALER_HIT_VALUE or busted(dealer_total):
+        current_total = total(dealer_cards)
+        if current_total >= DEALER_HIT_VALUE or busted(current_total):
             break
         deal(deck, dealer_cards)
-        dealer_total = total(dealer_cards)
-    return dealer_total
+    return total(dealer_cards)
 
 
 def deal(deck, cards):
@@ -130,10 +130,10 @@ def play_twenty_one(wins):
     prompt(f'Your cards are: {display_hand(player_cards)}'
            f' with a total value of {player_total}')
 
-    player_total = player_turn(current_deck, player_cards, player_total)
+    player_total = player_turn(current_deck, player_cards)
 
     if not busted(player_total):
-        dealer_total = dealer_turn(current_deck, dealer_cards, dealer_total)
+        dealer_total = dealer_turn(current_deck, dealer_cards)
 
     winner = calculate_results(player_total, dealer_total)
     display_results(player_cards, dealer_cards, player_total, dealer_total)
