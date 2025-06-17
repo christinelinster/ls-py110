@@ -7,8 +7,8 @@ A palindrome reads the same forwards and backwards. For this problem, it is case
 '''
 
 def is_real_palindrome(text):
-    alnum_text = "".join(char for char in text if char.isalnum())
-    return alnum_text.casefold() == alnum_text[::-1].casefold()
+    alnum_text = "".join(char.casefold() for char in text if char.isalnum())
+    return alnum_text == alnum_text[::-1]
 
 
 

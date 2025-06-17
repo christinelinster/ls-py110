@@ -10,7 +10,6 @@ def time_of_day(time_in_minutes):
     time_in_minutes = time_in_minutes % MINUTES_PER_DAY
     hours = time_in_minutes // MINUTES_PER_HOUR
     minutes = time_in_minutes % MINUTES_PER_HOUR
-    time_in_minutes = time_in_minutes / 60 
     
     return f"{hours:02d}:{minutes:02d}"
 

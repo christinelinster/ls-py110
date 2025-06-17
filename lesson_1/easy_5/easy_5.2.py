@@ -1,7 +1,7 @@
 # Retain Specific Keys
 
 def keep_keys(input_dict, keys):
-    return dict([(key, value) for key, value in input_dict.items() if key in keys])
+    return {key: value for key, value in input_dict.items() if key in keys}
 
 input_dict = {
     'red': 1,

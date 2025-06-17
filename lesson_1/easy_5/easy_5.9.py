@@ -1,20 +1,28 @@
-# Staggered Case (Part 1)
+# Staggered Case (Part 2)
 
 def staggered_case(string):
+    upper = True
     result = ""
-    for i in range(len(string)):
-        if i % 2 == 0:
-            result += string[i].upper()
+
+    for letter in string:
+        if letter.isalnum():
+            if upper:
+                result += letter.upper()
+            else:
+                result += letter.lower()
+            upper = not upper
         else:
-            result += string[i].lower()
+            result += letter
     return result
 
+
+
 string = 'I Love Launch School!'
-result = "I LoVe lAuNcH ScHoOl!"
+result = "I lOvE lAuNcH sChOoL!"
 print(staggered_case(string) == result)  # True
 
 string = 'ALL_CAPS'
-result = "AlL_CaPs"
+result = "AlL_cApS"
 print(staggered_case(string) == result)  # True
 
 string = 'ignore 77 the 4444 numbers'

@@ -42,6 +42,3 @@ if last_number in numbers:
     print(f'{last_number} is in {first_five_numbers}')
 else:
     print(f'{last_number} is not in {first_five_numbers}')
-
-
-

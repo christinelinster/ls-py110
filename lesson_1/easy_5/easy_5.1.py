@@ -1,7 +1,7 @@
 # Inverting Dictionary
 
-def invert_dict(dictionary):
-    return dict([(value, key) for key, value in dictionary.items()])
+def invert_dict(my_dict):
+    return {value: key for key, value in my_dict.items()}
 
 print(invert_dict({
           'apple': 'fruit',

@@ -1,16 +1,11 @@
 # Delete Vowels
-VOWELS = ["a", "e", "i", "o", "u"]
+VOWELS = 'aeiou'
 def remove_vowels(original):
-    result = []
-    final_word = ""
+    no_vowels = []
     for word in original:
-        for letter in word:
-            if letter.lower() not in VOWELS:
-                final_word += letter
-        result.append(final_word)
-        final_word = ""
+        no_vowels.append("".join(char for char in word if char.lower() not in VOWELS))
 
-    return result
+    return no_vowels
 
 
 # All of these examples should print True

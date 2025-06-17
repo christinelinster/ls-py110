@@ -17,7 +17,6 @@ def count_occurrences(lst):
         print(f'{item} ==> {count}')
 
 
-
 vehicles = ['car', 'car', 'truck', 'car', 'SUV', 'truck',
             'motorcycle', 'motorcycle', 'suv', 'car', 'truck']
 

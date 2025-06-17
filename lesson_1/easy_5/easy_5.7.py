@@ -1,22 +1,16 @@
-# Sum of Sums
+# Sum of Digits
 
-def sum_of_sums(numbers):
-    prefix = 0
-    total = 0
-    for num in numbers:
-        prefix += num 
-        total += prefix
-    return total
+# def sum_digits(number):
+#     list_num = list(str(number))
+#     total = 0
+#     for num in list_num:
+#         total += int(num)
+#     return total
 
-        
+def sum_digits(number):
+    return sum([int(n) for n in str(number)])
 
-print(sum_of_sums([3, 5, 2]) == 21)               # True
-# (3) + (3 + 5) + (3 + 5 + 2) --> 21
 
-print(sum_of_sums([1, 5, 7, 3]) == 36)            # True
-# (1) + (1 + 5) + (1 + 5 + 7) + (1 + 5 + 7 + 3) --> 36
-
-print(sum_of_sums([1, 2, 3, 4, 5]) == 35)         # True
-# (1) + (1+2) + (1+2+3) + (1+2+3+4) + (1+2+3+4+5) --> 35
-
-print(sum_of_sums([4]) == 4)                      # True
+print(sum_digits(23) == 5)              # True
+print(sum_digits(496) == 19)            # True
+print(sum_digits(123456789) == 45)      # True
