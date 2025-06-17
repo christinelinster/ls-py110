@@ -6,7 +6,7 @@ def fibonacci(position):
     
     prev, curr = 1, 1
 
-    for _ in range(3, position + 1):
+    for _ in range(2, position):
         prev, curr = curr, prev + curr 
 
     return curr 

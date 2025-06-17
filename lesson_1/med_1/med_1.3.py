@@ -2,7 +2,7 @@
 
 def max_rotation(number):
     num_str = str(number)
-    for i in range(len(num_str)):
+    for i in range(len(num_str) - 1):
         first_section = num_str[:i]
         second_section = rotate(num_str[i:])
         num_str = first_section + second_section
